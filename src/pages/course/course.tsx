@@ -54,8 +54,8 @@ interface Props {
 
 const Course = ({ id }: Props) => {
     const [courseDetails, setCourseDetails] = useState<Course>({});
-    const [url, setUrl] = useState("");
-    const [selectedIndex, setSelectedIndex] = React.useState(0);
+    const [selectedIndex, setSelectedIndex] = useState<number>(0);
+    const [url, setUrl] = useState<string>("");
 
     useEffect(() => {
         getCourseDetails(id).then((response) => { setCourseDetails(response); setUrl(response.lessons[0].link) });
@@ -73,7 +73,10 @@ const Course = ({ id }: Props) => {
                     <List>
                         {courseDetails?.lessons?.map((lesson, index) => {
                             return (<ListItem key={lesson.id} disablePadding>
-                                <ListItemButton selected={selectedIndex === index} disabled={lesson.status === "locked"} onClick={() => { setUrl(lesson.link); setSelectedIndex(index) }}>
+                                <ListItemButton
+                                    selected={selectedIndex === index}
+                                    disabled={lesson.status === "locked"}
+                                    onClick={() => { setUrl(lesson.link); setSelectedIndex(index) }}>
                                     <ListItemIcon>
                                         {
                                             lesson.status === "locked" ? <LockIcon /> : <SchoolIcon />

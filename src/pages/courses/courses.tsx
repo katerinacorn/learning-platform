@@ -7,6 +7,7 @@ import { getCourses } from '../../services/courses-fetch-service';
 import CardInfo from '../../components/card-info/card-info';
 import theme from '../../styles';
 import { CourseContext } from '../../App';
+import { sliceCourses, sortDataByDate } from '../../utils/utils';
 
 interface ICourse {
     id: string;
@@ -36,23 +37,13 @@ interface CourseData {
 }
 const Courses = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState<number>(1);
     const [data, setData] = useState<ICourse[]>([]);
-    const [count, setCount] = useState(0);
-    const navigate = useNavigate();
+    const [count, setCount] = useState<number>(0);
     const { courseID, setCourseID } = useContext(CourseContext);
+    const navigate = useNavigate();
 
-    function sliceCourses(courses: ICourse[], page: number, pageSize: number): ICourse[] {
-        const startIndex = (page - 1) * pageSize;
-        const endIndex = startIndex + pageSize;
-        return courses.slice(startIndex, endIndex);
-    }
-
-    const sortedData = [...data].sort((a, b) => {
-        const dateA = new Date(a.launchDate).getTime();
-        const dateB = new Date(b.launchDate).getTime();
-        return dateB - dateA;
-    });
+    const sortedData = sortDataByDate(data);
     const courses = sliceCourses(sortedData, page, 10);
 
     useEffect(() => {
